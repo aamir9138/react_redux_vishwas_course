@@ -2,7 +2,7 @@
 
 <!-- Introduction lecture 1 -->
 
-## Redux
+## lecture 1 Redux
 
 - Redux is a library
 - Redux is a `predictable`,`state container` for `Javascript apps`
@@ -95,3 +95,29 @@ state = {
 
 - First we will learn just the Redux library
 - than we will learn React-Redux in this course
+
+<!-- lecture 2 Getting started -->
+
+## lecture 2 Getting Started
+
+1. install node
+2. install npm
+3. run the command in the root folder. it will create a `package.json` file
+
+```
+npm init --yes
+```
+
+4. again run another command
+
+```
+npm install redux
+```
+
+5. create a file `index.js` with below code
+
+```
+console.log('From index.js')
+```
+
+6. in terminal `node index.js`. it will console log the message

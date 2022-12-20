@@ -1,0 +1,23 @@
+{
+  "name": "react_redux_vishwas_course",
+  "version": "1.0.0",
+  "description": "React-Redux",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aamir9138/react_redux_vishwas_course.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aamir9138/react_redux_vishwas_course/issues"
+  },
+  "homepage": "https://github.com/aamir9138/react_redux_vishwas_course#readme",
+  "dependencies": {
+    "redux": "^4.2.0"
+  }
+}
