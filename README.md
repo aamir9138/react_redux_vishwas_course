@@ -121,3 +121,11 @@ console.log('From index.js')
 ```
 
 6. in terminal `node index.js`. it will console log the message
+
+## lecture 3 Three Core Concepts
+
+- A scenario with an example from the picture
+  ![three core concepts](./pictures/three_core_concepts.PNG)
+
+- in relation to Redux the scenario can be picture as below
+  ![three core concepts in Redux](./pictures/three_core_concepts_continued.PNG)
