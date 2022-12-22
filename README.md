@@ -129,3 +129,64 @@ console.log('From index.js')
 
 - in relation to Redux the scenario can be picture as below
   ![three core concepts in Redux](./pictures/three_core_concepts_continued.PNG)
+
+## lecture 4 Three Principles
+
+### First Principle
+
+** The state of your whole application is stored in an object tree within a single store**
+
+- in simple language we have to maintain our application state in a single object which would be managed by the Redux store.
+
+- lets assume we are tracking the number of cakes on the shelf in a store our object will look something like
+
+```
+{
+  numberOfCakes: 10
+}
+```
+
+### Second Principle
+
+** The only way to change the state is to emit an action, an object describing what happend **
+
+- in simple terms to update the state of your app, you need to let Redux know about that with an `action`.
+- we are not allowed to directly update the state object
+  <u>Cake Shop Example</u>
+  Let the shopkeeper know about your action - BUY_CAKE. to represent the action in code well it is a simple object witha a `type` property.
+
+```
+{
+type: BUY_CAKE
+}
+```
+
+- so the Second principle is that that a state is readonly thing which can only be change by emitting an action.
+
+### Third Principle
+
+** To specify how the state tree is transformed by actions, you write pure reducers **
+
+- the second principle says that state can only be transformed only by emitting actions. but how should the state transforms the third principle says this
+- we need to write pure reducers. pure reducers are basically the pure functions that take the previousState and action as input in function and returns a newState
+- `Reducer - (previousState, action) => newState`
+- The `Reducer` instead of updating the `old state` should produce a `newState`
+  <u>Cake Shop Example</u>
+
+Reducer is the shopkeeper. below is a reducer
+
+```
+const reducer = (state, action) => {
+  switch (action.type){
+    case BUY_CAKE: return {
+      numOfCakes: state.numOfCakes -1
+    }
+  }
+}
+```
+
+### Three Principles Overview
+
+The 3 principles overview can be better depicted in a picture.
+
+![Three principle overview](./pictures/three_principles_overview.PNG)
