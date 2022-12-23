@@ -190,3 +190,62 @@ const reducer = (state, action) => {
 The 3 principles overview can be better depicted in a picture.
 
 ![Three principle overview](./pictures/three_principles_overview.PNG)
+
+## lecture 5 Actions
+
+- Actions are the only way our application can interact with the store
+- Actions carry some information from the app to the redux store
+- Actions are plain JavaScript objects
+- Actions have a `type` property that indicates the type of action being performed
+- The `type` property is typically defined as string constants
+
+### Actions related code
+
+1. first we define the `string constant` that defines the type of Action
+
+```
+const BUY_CAKE = 'BUY_CAKE'
+```
+
+this will avoid the spelling mistakes when we will be using the Actions. it is followed in the community
+
+2. next define our Action. so remember an Action is an Object with a `property` of `type`.
+3. and here that type property has a value `BUY_CAKE`
+4. This is Action we just created
+
+```
+/* lecture 5 Actions */
+const BUY_CAKE = 'BUY_CAKE'; // string constant
+
+// below is action definition
+{
+  type: BUY_CAKE;
+}
+```
+
+5. we are not restricted to provide only `type` property in an Action. other than type the structure of the Action object is completely upto us. we can add other properties to it.
+6. so we can have other property that is an object or really simply property like a string which we use here as `info` and set it to 'First Redux action'
+
+```
+const BUY_CAKE = 'BUY_CAKE'; // string constant
+
+// below is action definition
+{
+  type: BUY_CAKE;
+  info: 'First redux action'
+}
+```
+
+above we have action completed. but in Redux we can also have an `Action Creator`. 7. An `Action Creator` simply creates an Action. in terms of code an `Action Creator` is a function that returns an action. 8. so to implement the `Action Creator` function. we can write a function `buyCake()`
+
+```
+// Action Creator function implementation
+const BUY_CAKE = 'BUY_CAKE'; // string constant
+
+function buyCake() {
+  return {
+    type: BUY_CAKE,
+    info: 'First redux action',
+  };
+}
+```
