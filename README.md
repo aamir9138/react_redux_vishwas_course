@@ -249,3 +249,61 @@ function buyCake() {
   };
 }
 ```
+
+## lecture 6 Reducers
+
+- let us recollect what we know about Reducers.
+- Reducers specify how the app's state changes in response to actions sent to the store.
+- so `Actions` only specify what happend. but it didn't specify how the application state changes. `Reducers` are in charge of that.
+
+<u>Reducer</u>
+
+- Reducer is a function that accepts state and action as arguments, and returns the next state of the application
+
+- in simple words we can say
+
+```
+Reducer = (previousState, action) => newState
+```
+
+- so as the Reducer accepts a state and the Redux need a state for the whole application (and the whole application state needs to be in a single object). we will create first an `initial state`. which in our case will be
+
+```
+const initialState = {
+  numberOfCakes: 10
+}
+```
+
+- This is a simple state of application. in complex application we can have a more complex state of the object.
+- now we will define the `reducer` function down below
+
+```
+// Reducer is defined below
+const reducer = (state = initialState, action) => {
+  switch (action.type) {
+    case BUY_CAKE:
+      return {
+        numberOfCakes: state.numberOfCakes - 1,
+      };
+    default:
+      return state;
+  }
+};
+```
+
+- The initial value of the state is always pass as an initial state of the application to the Reducer function
+- if the state object contains more than one property. than first spread the state and change only that property which needs to be changed. spreading the state object essentially means copying the state object
+
+```
+// if state object contain more than one property. than first we spread the state like below
+const reducer = (state = initialState, action) => {
+  switch (action.type) {
+    case BUY_CAKE:
+      return {...state,
+        numberOfCakes: state.numberOfCakes - 1, // here we are not mutating the state object. we are returning a new object
+      };
+    default:
+      return state;
+  }
+};
+```
