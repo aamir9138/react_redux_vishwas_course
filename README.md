@@ -398,3 +398,17 @@ updated state { numberOfCakes: 9 }
 updated state { numberOfCakes: 8 }
 updated state { numberOfCakes: 7 }
 ```
+
+## lecture 8 cakes and Ice Creams
+
+### Cake shop
+
+- cakes stored on the shelf
+- shopkeeper to handle BUY_CAKE from customer
+
+### Ice creams
+
+- now let say we want to sell ice cream also
+- Ice cream stored in the freezer
+- New shopkeeper to handle BUY_ICECREAM request from customer.
+- this is for scalibility. new shopkeeper means new reduceer.
