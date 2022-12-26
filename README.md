@@ -307,3 +307,94 @@ const reducer = (state = initialState, action) => {
   }
 };
 ```
+
+## lecture 7 Store
+
+- let us learn about `store` which bring the `actions` and the `reducer` togather.
+- we know only one thing about the `store` that for our entire application we have only just one store.
+
+<u>Responsibilities of Store</u>
+
+1. Holds application state
+2. it exposes a method `getState()` which allows access to the application state
+3. it provides a method called `dispatch(action)` that allows to update the state of the application. the dispatch(action) method accept an action as its parameter.
+4. the `store` also allows the listeners to register via the `subscribe(listener)` method. The subscribe method accepts a function as a parameter which is executed anytime the `state` or the `redux store` changes.
+5. finally you can unscribe to the function by calling the function that was returned by the `subscribed(listener)` method.
+
+Now our goal is to implement all these in our application.
+
+<u>1. Holds application state</u>
+
+- if you have to use the `redux` in a react application. that use can use `redux` but writing like this
+
+```
+import redux from 'redux'
+```
+
+however we are running this app as a simple node.js application for which we have to use the `require` syntax.
+
+```
+const redux = require('redux')
+```
+
+The redux library provides a method called `createStore()` which we are going to use for creating the store.
+
+```
+const createStore = redux.createStore
+const store = createStore()
+```
+
+- The `createStore()` function accepts a parameter which is the `reducer` function. the reducer function has the initial state of the applicaton. This is required for the store to make the state transition based on the action received.
+
+<u>2. getState() method</u>
+
+```
+console.log(store.getState())
+```
+
+<u>4. subcribe to listener</u>
+
+The fourth responsibility is to allow the app to subscribe to changes in the `store` that is acheived using the `subscribe` method. The `subscribe` method accepts a function. to keep our example simple we are going to log only the updated state.
+
+```
+store.subscribe(() =>
+  console.log('updated state', store.getState())
+);
+```
+
+<u>3. dispatch(action)</u>
+
+- The source provide a `dispatch` method to `update the state`
+- The dispatch method accepts an `action` as its parameter.
+- so here we can either directly provide an `action`. but we have an `action creator` so we will use that.
+
+```
+store.dispatch(buyCake());
+store.dispatch(buyCake());
+store.dispatch(buyCake());
+```
+
+- we are doing it 3 times to see 3 state transitions
+
+<u>5. unsubscribing </u>
+the final part is to `unsubscribe` from the `store` by calling the function return by the `subscribe method`.
+
+```
+const unsubscribe = store.subscribe(() =>
+  console.log('updated state', store.getState())
+
+unsubscribe();
+);
+```
+
+<u> output </u>
+
+the output is as below
+
+```
+$ node index
+initial state { numberOfCakes: 10 }
+updated state { numberOfCakes: 9 }
+updated state { numberOfCakes: 8 }
+updated state { numberOfCakes: 7 }
+```
