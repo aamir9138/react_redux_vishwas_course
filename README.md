@@ -412,3 +412,161 @@ updated state { numberOfCakes: 7 }
 - Ice cream stored in the freezer
 - New shopkeeper to handle BUY_ICECREAM request from customer.
 - this is for scalibility. new shopkeeper means new reduceer.
+
+## lecture 9 Multiple Reducers
+
+- our shop now needs 2 shopkeepers one each for managing `cakes` and `ice creams`.
+- two shop keeper means we need 2 reducers. but first we will show you how to do it with single reducer but we will implement separate reducers.
+
+### single reducer for cakes and ice cream
+
+- Below you can see that we have the same single state object i.e `inital state`. number of ice creams is added to that. separte `action creator` for ice cream and a single `reducer` with separate `switch case`.
+
+```
+/* lecture 9 Multiple Reducers */
+// single reducer for CAKES and ICE CREAMS
+const redux = require('redux');
+const createStore = redux.createStore;
+
+// Action Creator function implementation
+const BUY_CAKE = 'BUY_CAKE'; // string constant
+const BUY_ICECREAM = 'BUY_ICECREAM';
+
+function buyCake() {
+  return {
+    type: BUY_CAKE,
+    info: 'First redux action',
+  };
+}
+
+function buyIcecream() {
+  return {
+    type: BUY_ICECREAM,
+    info: 'second redux action',
+  };
+}
+
+// state of Application will be an Object. here is the initial state
+const initialState = {
+  numberOfCakes: 10,
+  numberOfIcecreams: 20,
+};
+
+// reducer function
+const reducer = (state = initialState, action) => {
+  switch (action.type) {
+    case BUY_CAKE:
+      return {
+        ...state,
+        numberOfCakes: state.numberOfCakes - 1, // here we are not mutating the state object. we are returning a new object
+      };
+    case BUY_ICECREAM:
+      return {
+        ...state,
+        numberOfIcecreams: state.numberOfIcecreams - 1, // here we are not mutating the state object. we are returning a new object
+      };
+    default:
+      return state;
+  }
+};
+
+const store = createStore(reducer);
+console.log('initial state', store.getState());
+const unsubscribe = store.subscribe(() =>
+  console.log('updated state', store.getState())
+);
+store.dispatch(buyCake());
+store.dispatch(buyCake());
+store.dispatch(buyCake());
+store.dispatch(buyIcecream());
+store.dispatch(buyIcecream());
+unsubscribe();
+```
+
+```
+// output
+$ node index.js
+initial state { numberOfCakes: 10, numberOfIcecreams: 20 }
+updated state { numberOfCakes: 9, numberOfIcecreams: 20 }
+updated state { numberOfCakes: 8, numberOfIcecreams: 20 }
+updated state { numberOfCakes: 7, numberOfIcecreams: 20 }
+updated state { numberOfCakes: 7, numberOfIcecreams: 19 }
+updated state { numberOfCakes: 7, numberOfIcecreams: 18 }
+```
+
+### 2 reducers one for each Cakes and Icecreams
+
+- for this case we will modify the code as under.
+
+```
+// double reducer one for each CAKES and ICE CREAMS
+const redux = require('redux');
+const createStore = redux.createStore;
+
+// Action Creator function implementation
+const BUY_CAKE = 'BUY_CAKE'; // string constant
+const BUY_ICECREAM = 'BUY_ICECREAM';
+
+function buyCake() {
+  return {
+    type: BUY_CAKE,
+    info: 'First redux action',
+  };
+}
+
+function buyIcecream() {
+  return {
+    type: BUY_ICECREAM,
+    info: 'second redux action',
+  };
+}
+
+// for each reducer we will have separate initial state
+// initial state of cakes
+const initialCakesState = {
+  numberOfCakes: 10,
+};
+// initial state of ice creams
+const initialIcecreamState = {
+  numberOfIcecreams: 20,
+};
+
+// reducer function for cakes
+const cakeReducer = (state = initialState, action) => {
+  switch (action.type) {
+    case BUY_CAKE:
+      return {
+        ...state,
+        numberOfCakes: state.numberOfCakes - 1, // here we are not mutating the state object. we are returning a new object
+      };
+    default:
+      return state;
+  }
+};
+
+// reducer function for ice creams
+const iceCreamReducer = (state = initialState, action) => {
+  switch (action.type) {
+    case BUY_ICECREAM:
+      return {
+        ...state,
+        numberOfIcecreams: state.numberOfIcecreams - 1, // here we are not mutating the state object. we are returning a new object
+      };
+    default:
+      return state;
+  }
+};
+
+// store accepts single reducer function but now we have two reducers. what to do this will be in next lecture.
+const store = createStore(reducer);
+console.log('initial state', store.getState());
+const unsubscribe = store.subscribe(() =>
+  console.log('updated state', store.getState())
+);
+store.dispatch(buyCake());
+store.dispatch(buyCake());
+store.dispatch(buyCake());
+store.dispatch(buyIcecream());
+store.dispatch(buyIcecream());
+unsubscribe();
+```
