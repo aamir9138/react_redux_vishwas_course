@@ -570,3 +570,110 @@ store.dispatch(buyIcecream());
 store.dispatch(buyIcecream());
 unsubscribe();
 ```
+
+## lecture 10 Combining multiple reducers
+
+- let us see how to combine multiple reducers (in our case `cakeReducer` and `iceCreamReducer`) in order to provide it to the `store`. As `Store` should be one for that reason we have to create one single reducer let say `rootReducer` and provide it as an argument to `createStore()`
+
+- redux provide a method for combining the reducers
+
+```
+const combineReducers = redux.combineReducers
+```
+
+- then we need to create an object with both reducers and provide that object as an argument
+
+```
+/* lecture 10 Combine Reducers */
+// double reducer one for each CAKES and ICE CREAMS
+const redux = require('redux');
+const createStore = redux.createStore;
+const combineReducers = redux.combineReducers;
+
+// Action Creator function implementation
+const BUY_CAKE = 'BUY_CAKE'; // string constant
+const BUY_ICECREAM = 'BUY_ICECREAM';
+
+function buyCake() {
+  return {
+    type: BUY_CAKE,
+    info: 'First redux action',
+  };
+}
+
+function buyIcecream() {
+  return {
+    type: BUY_ICECREAM,
+    info: 'second redux action',
+  };
+}
+
+// for each reducer we will have separate initial state
+// initial state of cakes
+const initialCakesState = {
+  numberOfCakes: 10,
+};
+// initial state of ice creams
+const initialIcecreamState = {
+  numberOfIcecreams: 20,
+};
+
+// reducer function for cakes
+const cakeReducer = (state = initialCakesState, action) => {
+  switch (action.type) {
+    case BUY_CAKE:
+      return {
+        ...state,
+        numberOfCakes: state.numberOfCakes - 1, // here we are not mutating the state object. we are returning a new object
+      };
+    default:
+      return state;
+  }
+};
+
+// reducer function for ice creams
+const iceCreamReducer = (state = initialIcecreamState, action) => {
+  switch (action.type) {
+    case BUY_ICECREAM:
+      return {
+        ...state,
+        numberOfIcecreams: state.numberOfIcecreams - 1, // here we are not mutating the state object. we are returning a new object
+      };
+    default:
+      return state;
+  }
+};
+
+// store accepts single reducer function but now we have two reducers. so we combine it here as a rootReducer
+const rootReducer = combineReducers({
+  cake: cakeReducer,
+  iceCream: iceCreamReducer,
+});
+const store = createStore(rootReducer);
+console.log('initial state', store.getState());
+const unsubscribe = store.subscribe(() =>
+  console.log('updated state', store.getState())
+);
+store.dispatch(buyCake());
+store.dispatch(buyCake());
+store.dispatch(buyCake());
+store.dispatch(buyIcecream());
+store.dispatch(buyIcecream());
+unsubscribe();
+```
+
+the output is as below
+
+```
+$ node index
+initial state { cake: { numberOfCakes: 10 }, iceCream: { numberOfIcecreams: 20 } }
+updated state { cake: { numberOfCakes: 9 }, iceCream: { numberOfIcecreams: 20 } }
+updated state { cake: { numberOfCakes: 8 }, iceCream: { numberOfIcecreams: 20 } }
+updated state { cake: { numberOfCakes: 7 }, iceCream: { numberOfIcecreams: 20 } }
+updated state { cake: { numberOfCakes: 7 }, iceCream: { numberOfIcecreams: 19 } }
+updated state { cake: { numberOfCakes: 7 }, iceCream: { numberOfIcecreams: 18 } }
+```
+
+- if we now wish to access `numberOfCakes` we use `state.cake.numberOfCakes` and so on.
+- when we dispatch an action both the reducers receives the action. the difference is that one of the reducer acts on that action and the other ignores it.
+- now each reducer is managing its own state

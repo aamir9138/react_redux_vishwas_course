@@ -160,9 +160,82 @@
 // store.dispatch(buyIcecream());
 // unsubscribe();
 
+// // double reducer one for each CAKES and ICE CREAMS
+// const redux = require('redux');
+// const createStore = redux.createStore;
+
+// // Action Creator function implementation
+// const BUY_CAKE = 'BUY_CAKE'; // string constant
+// const BUY_ICECREAM = 'BUY_ICECREAM';
+
+// function buyCake() {
+//   return {
+//     type: BUY_CAKE,
+//     info: 'First redux action',
+//   };
+// }
+
+// function buyIcecream() {
+//   return {
+//     type: BUY_ICECREAM,
+//     info: 'second redux action',
+//   };
+// }
+
+// // for each reducer we will have separate initial state
+// // initial state of cakes
+// const initialCakesState = {
+//   numberOfCakes: 10,
+// };
+// // initial state of ice creams
+// const initialIcecreamState = {
+//   numberOfIcecreams: 20,
+// };
+
+// // reducer function for cakes
+// const cakeReducer = (state = initialCakesState, action) => {
+//   switch (action.type) {
+//     case BUY_CAKE:
+//       return {
+//         ...state,
+//         numberOfCakes: state.numberOfCakes - 1, // here we are not mutating the state object. we are returning a new object
+//       };
+//     default:
+//       return state;
+//   }
+// };
+
+// // reducer function for ice creams
+// const iceCreamReducer = (state = initialIcecreamState, action) => {
+//   switch (action.type) {
+//     case BUY_ICECREAM:
+//       return {
+//         ...state,
+//         numberOfIcecreams: state.numberOfIcecreams - 1, // here we are not mutating the state object. we are returning a new object
+//       };
+//     default:
+//       return state;
+//   }
+// };
+
+// // store accepts single reducer function but now we have two reducers. what to do this will be in next lecture.
+// const store = createStore(reducer);
+// console.log('initial state', store.getState());
+// const unsubscribe = store.subscribe(() =>
+//   console.log('updated state', store.getState())
+// );
+// store.dispatch(buyCake());
+// store.dispatch(buyCake());
+// store.dispatch(buyCake());
+// store.dispatch(buyIcecream());
+// store.dispatch(buyIcecream());
+// unsubscribe();
+
+/* lecture 10 Combine Reducers */
 // double reducer one for each CAKES and ICE CREAMS
 const redux = require('redux');
 const createStore = redux.createStore;
+const combineReducers = redux.combineReducers;
 
 // Action Creator function implementation
 const BUY_CAKE = 'BUY_CAKE'; // string constant
@@ -193,7 +266,7 @@ const initialIcecreamState = {
 };
 
 // reducer function for cakes
-const cakeReducer = (state = initialState, action) => {
+const cakeReducer = (state = initialCakesState, action) => {
   switch (action.type) {
     case BUY_CAKE:
       return {
@@ -206,7 +279,7 @@ const cakeReducer = (state = initialState, action) => {
 };
 
 // reducer function for ice creams
-const iceCreamReducer = (state = initialState, action) => {
+const iceCreamReducer = (state = initialIcecreamState, action) => {
   switch (action.type) {
     case BUY_ICECREAM:
       return {
@@ -218,8 +291,12 @@ const iceCreamReducer = (state = initialState, action) => {
   }
 };
 
-// store accepts single reducer function but now we have two reducers. what to do this will be in next lecture.
-const store = createStore(reducer);
+// store accepts single reducer function but now we have two reducers. so we combine it here as a rootReducer
+const rootReducer = combineReducers({
+  cake: cakeReducer,
+  iceCream: iceCreamReducer,
+});
+const store = createStore(rootReducer);
 console.log('initial state', store.getState());
 const unsubscribe = store.subscribe(() =>
   console.log('updated state', store.getState())
