@@ -677,3 +677,74 @@ updated state { cake: { numberOfCakes: 7 }, iceCream: { numberOfIcecreams: 18 } 
 - if we now wish to access `numberOfCakes` we use `state.cake.numberOfCakes` and so on.
 - when we dispatch an action both the reducers receives the action. the difference is that one of the reducer acts on that action and the other ignores it.
 - now each reducer is managing its own state
+
+## lecture 11 Middleware
+
+It is the suggested way to extend Redux with custom functionaities. so if you want Redux with extra features `Middleware` is the way.
+
+It basically provides a third-party extension point between dispatching an action, and the moment it reaches the reducer
+
+use middleware for logging, crash reporting, performing asynchronous tasks etc.
+
+### redux-logger
+
+redux-logger is a middleware which we will be incorporating in our cakes and icecream application.
+This library logs all the information related to redux in our application.
+
+```
+npm install redux-logger
+```
+
+now we need to create a `logger` for our application. we will use `createLogger` method provided by the library.
+
+```
+const reduxLogger = require('redux-logger')
+const logger = reduxLogger.createLogger()
+```
+
+we now have the `logger` middleware which we can use now in our application.
+
+### how to include a Middleware
+
+The redux library provides a function called `applyMiddleware` which is used to apply Middleware.
+
+```
+const applyMiddleware = redux.applyMiddleware
+```
+
+than to the createStore function we pass in the second parameter, `applyMiddleware(logger)`
+
+```
+const store = createStore(rootReducer, applyMiddleware(logger))
+```
+
+remove the console.log statement from the store subscription as we have the logger to handle all of that
+
+now in terminal `node index.js` and we see all the logs
+
+```
+$ node index
+initial state { cake: { numberOfCakes: 10 }, iceCream: { numberOfIcecreams: 20 } }
+updated state { cake: { numberOfCakes: 9 }, iceCream: { numberOfIcecreams: 20 } }
+ action BUY_CAKE @ 10:51:42.386
+   prev state { cake: { numberOfCakes: 10 }, iceCream: { numberOfIcecreams: 20 } }
+   action     { type: 'BUY_CAKE', info: 'First redux action' }
+   next state { cake: { numberOfCakes: 9 }, iceCream: { numberOfIcecreams: 20 } }
+updated state { cake: { numberOfCakes: 8 }, iceCream: { numberOfIcecreams: 20 } }
+ action BUY_CAKE @ 10:51:42.388
+   prev state { cake: { numberOfCakes: 9 }, iceCream: { numberOfIcecreams: 20 } }
+   action     { type: 'BUY_CAKE', info: 'First redux action' }
+   next state { cake: { numberOfCakes: 8 }, iceCream: { numberOfIcecreams: 20 } }
+updated state { cake: { numberOfCakes: 7 }, iceCream: { numberOfIcecreams: 20 } }
+ action BUY_CAKE @ 10:51:42.389
+   prev state { cake: { numberOfCakes: 8 }, iceCream: { numberOfIcecreams: 20 } }
+   action     { type: 'BUY_CAKE', info: 'First redux action' }
+   next state { cake: { numberOfCakes: 7 }, iceCream: { numberOfIcecreams: 20 } }
+updated state { cake: { numberOfCakes: 7 }, iceCream: { numberOfIcecreams: 19 } }
+ action BUY_ICECREAM @ 10:51:42.390
+   prev state { cake: { numberOfCakes: 7 }, iceCream: { numberOfIcecreams: 20 } }
+   action     { type: 'BUY_ICECREAM', info: 'second redux action' }
+   next state { cake: { numberOfCakes: 7 }, iceCream: { numberOfIcecreams: 19 } }
+updated state { cake: { numberOfCakes: 7 }, iceCream: { numberOfIcecreams: 18 } }
+ action BUY_ICECREAM @ 10:51:42.390
+```
