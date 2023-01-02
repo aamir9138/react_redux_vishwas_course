@@ -748,3 +748,129 @@ updated state { cake: { numberOfCakes: 7 }, iceCream: { numberOfIcecreams: 19 } 
 updated state { cake: { numberOfCakes: 7 }, iceCream: { numberOfIcecreams: 18 } }
  action BUY_ICECREAM @ 10:51:42.390
 ```
+
+## lecture 12 Async Actions
+
+up until now we had work with `Synchronous Actions`
+
+### Synchronous Actions
+
+As soon as an action was dispatched, the state was immediately updated.
+If we dispatch the `BUY_CAKE` action, the `numOfCakes` was right away decremented by 1.
+same with `BUY_ICECREAM` action as well.
+however we will build applications where `Async Actions` will be required.
+
+### Async Actions
+
+for example we will use Asynchronous API calls to fetch data from an end point and use that data in your application.
+
+### Our Application
+
+Fetches a list of users from an API end point and stores it in the redux store.
+State? --- how our State will look like
+Actions? --- how actions will look like
+Reducer? --- how Reducer will be
+
+### Our Async State Object
+
+![Asynchronous State Object](./pictures/async_state_object.PNG)
+
+### Our Async Actions
+
+![Asynchronous Actions](./pictures/async_actions.PNG)
+
+### Our Async Reducers
+
+![Asynchronous Reducers](./pictures/async_reducers.PNG)
+
+### Implementation in code
+
+1. create a new file called asyncActions.js
+2. define 3 things within this file `the State`, `the Actions` and `the Reducers`
+
+### State
+
+```
+/* lecture 12 Async Actions */
+// State
+const initialState = {
+  loading: false,
+  users: [],
+  error: '',
+};
+```
+
+### Actions
+
+- for actions we need to define `String Constants` and `Actions creators`.
+- string constant are mentioned below
+
+```
+// String Constants
+const FETCH_USERS_REQUEST = 'FETCH_USERS_REQUEST'
+const FETCH_USERS_SUCCESS = 'FETCH_USERS_SUCCESS'
+const FETCH_USERS_FAILURE = 'FETCH_USERS_FAILURE'
+```
+
+- and `Action creators` are as follows.
+
+```
+// Action Creators
+const fetchUsersRequest = () => {
+  return {
+    type: FETCH_USERS_REQUEST
+  }
+}
+
+const fetchUsersSuccess = users => {
+  return {
+    type: FETCH_USERS_SUCCESS,
+    payload: users
+  }
+}
+
+const fetchUsersFailure = error => {
+  return {
+    type: FETCH_USERS_FAILURE,
+    payload: error
+  }
+}
+```
+
+### Reducer
+
+```
+// Reducers
+const reducer = (state = initialState, action) => {
+  switch(action.type){
+    case FETCH_USERS_REQUEST:
+      return {
+        ...state,
+        loading: true
+      }
+    case FETCH_USERS_SUCCESS:
+      return {
+        loading: false,
+        users: action.payload,
+        error: ''
+      }
+    case FETCH_USERS_FAILURE:
+      return {
+        loading: false,
+        users: [],
+        error: action.payload
+      }
+  }
+}
+```
+
+### Store
+
+```
+// for Store
+const redux = require('redux')
+const createStore = redux.createStore
+
+// store
+const store = createStore(reducer)
+```
