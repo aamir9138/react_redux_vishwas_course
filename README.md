@@ -874,3 +874,198 @@ const createStore = redux.createStore
 // store
 const store = createStore(reducer)
 ```
+
+## lecture 13 Redux Thunk Middleware
+
+In this lecture let us see how to use Action creators with network request. i.e. how to make an API call when working with Redux.
+
+### Install axios package
+
+it is used for requests to an API end point
+
+### Install redux-thunk package
+
+it is a package from the redux ecosystem and is the standard way to define the `Async Action creators` in our applicaion. the redux-thunk library biscally is a Middleware which we will apply to our Redux store.
+
+### In Coding
+
+1. install axios `npm install axios`
+2. install redux-thunk `npm install redux-thunk`
+3. apply redux-thunk Middleware to our Redux store. The argument to applyMiddleware will be redux-thunk middleware.
+4. import thunkMiddleware from `redux-thunk`.
+
+```
+const redux = require('redux');
+const createStore = redux.createStore;
+const applyMiddleware = redux.applyMiddleware;
+const thunkMiddleware = require('redux-thunk').default;
+const axios = require('axios')
+// pass it to the store
+const store = createStore(reducer, applyMiddleware(thunkMiddleware));
+```
+
+### thunk middleware
+
+first we define a function `fetchUsers()` as an Action creator. an Action creator returns an action. but what thunk middleware brings to the table is the ability to return a function instead of an Action object. And what is special about this function is it doesn't have to be pure. so it is allowed to have sideEffects such as Async API calls. And this function can also dispatch Actions like the one we have seen before. that is made possible because it receives the dispatch method as an argument.
+
+so lets see how to make axios requests and dispatch the necessary actions. for the API endpoint we use JSON placeholder users `https://jsonplaceholder.typicode.com/users`.
+
+```
+// axios Async requests
+const fetchUsers = () => {
+  return function(dispatch){
+    axios.get('https://jsonplaceholder.typicode.com/users')
+        .then(response => {
+          // response.data is the array of users
+        })
+        .catch(error => {
+          // error.message is the error description
+        })
+  }
+}
+```
+
+so we have made the axios request. now we will dispatch the appropriate actions. before we fire off our API call we dispatch `fetchUsersRequest()` this will basically set loading to `true`. when we get back the response we are going to dispatch `fetchUsersSuccess()` passing in the list of `users`. now what is the list of users. it is
+
+```
+const users = response.data
+dispatch(fetchUsersSuccess(users))
+```
+
+This will give us all the properties so our logs will be flooded with data. instead we use the map operator and use only the id for each user.
+
+```
+const users = response.data.map((user) => user.id);
+dispatch(fetchUsersSuccess(users));
+```
+
+so when the `fetchUsersSuccess(users)` is dispatched it stores the users in our state. similarly when the request fails dispatch `fetchUsersFailure(error.message)`
+
+finally subscribe to the store and dispatch `fetchUsers()`
+
+```
+store.subscribe(() => {
+  console.log(store.getState());
+});
+store.dispatch(fetchUsers());
+```
+
+The full code is as under
+
+```
+/* lecture 13 Redux Thunk Middleware */
+
+// for Store
+const redux = require('redux');
+const createStore = redux.createStore;
+const applyMiddleware = redux.applyMiddleware;
+const thunkMiddleware = require('redux-thunk').default;
+const axios = require('axios');
+// State
+const initialState = {
+  loading: false,
+  users: [],
+  error: '',
+};
+
+// String Constants
+const FETCH_USERS_REQUEST = 'FETCH_USERS_REQUEST';
+const FETCH_USERS_SUCCESS = 'FETCH_USERS_SUCCESS';
+const FETCH_USERS_FAILURE = 'FETCH_USERS_FAILURE';
+
+// Action Creators
+const fetchUsersRequest = () => {
+  return {
+    type: FETCH_USERS_REQUEST,
+  };
+};
+
+const fetchUsersSuccess = (users) => {
+  return {
+    type: FETCH_USERS_SUCCESS,
+    payload: users,
+  };
+};
+
+const fetchUsersFailure = (error) => {
+  return {
+    type: FETCH_USERS_FAILURE,
+    payload: error,
+  };
+};
+
+// Reducers
+const reducer = (state = initialState, action) => {
+  switch (action.type) {
+    case FETCH_USERS_REQUEST:
+      return {
+        ...state,
+        loading: true,
+      };
+    case FETCH_USERS_SUCCESS:
+      return {
+        loading: false,
+        users: action.payload,
+        error: '',
+      };
+    case FETCH_USERS_FAILURE:
+      return {
+        loading: false,
+        users: [],
+        error: action.payload,
+      };
+  }
+};
+
+// axios Async requests
+const fetchUsers = () => {
+  return function (dispatch) {
+    dispatch(fetchUsersRequest()); // this will set loading to true
+    axios
+      .get('https://jsonplaceholder.typicode.com/users')
+      .then((response) => {
+        // response.data is the array of users
+        const users = response.data.map((user) => user.id);
+        dispatch(fetchUsersSuccess(users));
+      })
+      .catch((error) => {
+        // error.message is the error description
+        dispatch(fetchUsersFailure(error.message));
+      });
+  };
+};
+
+// store
+const store = createStore(reducer, applyMiddleware(thunkMiddleware));
+store.subscribe(() => {
+  console.log(store.getState());
+});
+store.dispatch(fetchUsers());
+```
+
+now if we run `node asyncAction.js` file. we see the result.
+
+```
+$ node asyncActions.js
+{ loading: true, users: [], error: '' }
+{
+  loading: false,
+  users: [
+    1, 2, 3, 4,  5,
+    6, 7, 8, 9, 10
+  ],
+  error: ''
+}
+```
+
+now if we provide an invalid URL. the result is
+
+```
+$ node asyncActions.js
+{ loading: true, users: [], error: '' }
+{
+  loading: false,
+  users: [],
+  error: 'getaddrinfo ENOTFOUND jsonplaceholer.typicode.com'
+}
+```
